@@ -30,21 +30,21 @@ class Observations(db.Model):
         return f"<Observation {self.result}, {self.resulttime}>"
 
     @classmethod
-    def filter_by_resultime(cls, mintime, maxtime):
+    def filter_by_resultime(cls, minresulttime, maxresulttime):
 
         obs_list = []
 
-        if not mintime:
-            obs_list = Observations.query.filter(Observations.resulttime <= maxtime)
+        if not minresulttime:
+            obs_list = Observations.query.filter(Observations.resulttime <= maxresulttime)
 
-        elif not maxtime:
-            obs_list = Observations.query.filter(Observations.resulttime >= mintime)
+        elif not maxresulttime:
+            obs_list = Observations.query.filter(Observations.resulttime >= minresulttime)
 
         else:
             obs_list = Observations.query.filter(
                 and_(
-                    Observations.resulttime <= maxtime,
-                    Observations.resulttime >= mintime,
+                    Observations.resulttime <= maxresulttime,
+                    Observations.resulttime >= minresulttime,
                 )
             )
 
@@ -53,16 +53,41 @@ class Observations(db.Model):
 
         return {"Observations": list(map(lambda x: to_json(x), obs_list))}
 
-
     @classmethod
-    def filter_by_thing_timebound(cls, thing, mintime, maxtime):
+    def filter_by_thing_timebound(cls, thing, minresulttime, maxresulttime, minphenombegintime, maxphenombegintime):
 
-        obs_list = Observations.query.join(Datastreams, Observations.datastream_id == Datastreams.id)\
-                        .add_columns(Observations.result, Observations.resulttime, Datastreams.id, Datastreams.thing_link, Datastreams.sensor_link)\
-                            .filter(and_(Datastreams.thing_link == thing,Observations.resulttime <= maxtime,Observations.resulttime >= mintime))
+        obs_list = (
+            Observations.query.join(
+                Datastreams, Observations.datastream_id == Datastreams.id
+            )
+            .add_columns(
+                Observations.result,
+                Observations.resulttime,
+                Observations.phenomenontime_begin,
+                Datastreams.id,
+                Datastreams.thing_link,
+                Datastreams.sensor_link,
+            )
+            .filter(
+                and_(
+                    Datastreams.thing_link == thing,
+                    Observations.resulttime <= maxresulttime,
+                    Observations.resulttime >= minresulttime,
+                    Observations.phenomenontime_begin <= maxphenombegintime,
+                    Observations.phenomenontime_begin >= minphenombegintime
+                )
+            )
+        )
 
         def to_json(x):
-            return {"result": x.result, "result time": x.resulttime, "datastream_id" : x.id, "thing" : x.thing_link, "sensor" : x.sensor_link}
+            return {
+                "result": x.result if x.result else "null",
+                "result time": x.resulttime if x.resulttime else "null",
+                "phenomenon time": x.phenomenontime_begin if x.phenomenontime_begin else "null",
+                "datastream_id": x.id,
+                "thing": x.thing_link,
+                "sensor": x.sensor_link,
+            }
 
         return {"Observations": list(map(lambda x: to_json(x), obs_list))}
 

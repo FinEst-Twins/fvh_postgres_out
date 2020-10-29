@@ -1,10 +1,11 @@
 from flask import jsonify, request, Blueprint, current_app
 from flask_restful import Resource, Api
 from datetime import datetime
+from datetime import timedelta
 import json
 import os
 from app.models import Observations, Datastreams
-from datetime import datetime
+
 import logging
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,6 +14,20 @@ logging.basicConfig(level=logging.INFO)
 
 observations_blueprint = Blueprint("observations", __name__)
 api = Api(observations_blueprint)
+
+DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(hours=-1)
+DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(hours=+1)
+DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-365)
+DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+365)
+
+
+def extract_timestamp_from_query(query_parameters, param_name, default_timestamp):
+    return (
+        datetime.strptime(query_parameters[param_name], "%Y-%m-%dT%H:%M:%S.%f")
+        if param_name in query_parameters
+        else default_timestamp
+    )
+
 
 
 class Observation(Resource):
@@ -25,26 +40,43 @@ class Observation(Resource):
             obs_list = []
             if query_parameters:
 
-                min_resulttime = None
-                max_resulttime = None
-                thing = None
+                minresulttime = extract_timestamp_from_query(
+                    query_parameters,
+                    "minresulttime",
+                    DEFAULT_MIN_RESULTTIME,
+                )
 
-                if 'minresulttime' in query_parameters:
-                    min_resulttime = request.args['minresulttime']
-                    min_resulttime = datetime.strptime(min_resulttime, '%Y-%m-%d,%H:%M:%S.%f')
+                maxresulttime = extract_timestamp_from_query(
+                    query_parameters,
+                    "maxresulttime",
+                    DEFAULT_MAX_RESULTTIME,
+                )
 
-                if 'maxresulttime' in query_parameters:
-                    max_resulttime = request.args['maxresulttime']
-                    max_resulttime = datetime.strptime(max_resulttime, '%Y-%m-%d,%H:%M:%S.%f')
+                minphenomtime = extract_timestamp_from_query(
+                    query_parameters,
+                    "minphenomtime",
+                    DEFAULT_MIN_PHENOMTIME,
+                )
+
+                maxphenomtime = extract_timestamp_from_query(
+                    query_parameters,
+                    "maxphenomtime",
+                    DEFAULT_MAX_PHENOMTIME,
+                )
 
                 if "thing" in query_parameters:
                     thing = request.args["thing"]
 
-                if thing and min_resulttime and max_resulttime:
-                    obs_list = Observations.filter_by_thing_timebound(thing, min_resulttime, max_resulttime)
+                    obs_list = Observations.filter_by_thing_timebound(
+                        thing,
+                        minresulttime,
+                        maxresulttime,
+                        minphenomtime,
+                        maxphenomtime,
+                    )
 
                 else:
-                    result = {"message":"query parameters thing, minresultime and maxresulttime expected"}
+                    result = {"message": "query parameters 'thing' expected"}
                     response = jsonify(result)
                     response.status_code = 400
                     return response
@@ -55,7 +87,6 @@ class Observation(Resource):
             response = jsonify(result)
             response.status_code = 400
             return response
-
 
         if obs_list:
 
@@ -70,5 +101,3 @@ class Observation(Resource):
 
 
 api.add_resource(Observation, "/observation")
-
-
