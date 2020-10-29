@@ -62,7 +62,7 @@ class Observations(db.Model):
                             .filter(and_(Datastreams.thing_link == thing,Observations.resulttime <= maxtime,Observations.resulttime >= mintime))
 
         def to_json(x):
-            return {"result": x.result, "result time": x.resulttime, "datastream_id" : x.id, "thing" : x.thing_link, "sensor" : x.sensor_link}
+            return {"result": x.result, "result time": x.resulttime, "phenomenon time": x.phenomenontime_begin, "datastream_id" : x.id, "thing" : x.thing_link, "sensor" : x.sensor_link}
 
         return {"Observations": list(map(lambda x: to_json(x), obs_list))}
 

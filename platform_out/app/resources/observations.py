@@ -50,7 +50,7 @@ class Observation(Resource):
                     return response
 
         except Exception as e:
-            print(e)
+            logging.error(e)
             result = {"message": "error"}
             response = jsonify(result)
             response.status_code = 400

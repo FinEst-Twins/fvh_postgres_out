@@ -41,7 +41,7 @@ def create_app(script_info=None):
 
     @app.route("/")
     def hello_world():
-        return jsonify(hello="world")
+        return jsonify(health="ok")
 
     return app
 
