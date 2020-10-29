@@ -5,7 +5,6 @@ from datetime import timedelta
 import json
 import os
 from app.models import Observations, Datastreams
-
 import logging
 from flask_sqlalchemy import SQLAlchemy
 
@@ -27,7 +26,6 @@ def extract_timestamp_from_query(query_parameters, param_name, default_timestamp
         if param_name in query_parameters
         else default_timestamp
     )
-
 
 
 class Observation(Resource):

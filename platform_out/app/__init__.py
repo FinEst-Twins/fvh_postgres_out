@@ -10,9 +10,6 @@ logging.basicConfig(level=logging.INFO)
 
 db = SQLAlchemy()
 
-# print(app.config, file=sys.stderr)
-
-
 
 def create_app(script_info=None):
 
@@ -27,12 +24,9 @@ def create_app(script_info=None):
     db.init_app(app)
 
     # register blueprints
-
     from app.resources.observations import observations_blueprint
-    app.register_blueprint(observations_blueprint)
 
-    # from app.resources.datastreams import datastreams_blueprint
-    # app.register_blueprint(datastreams_blueprint)
+    app.register_blueprint(observations_blueprint)
 
     # shell context for flask cli
     @app.shell_context_processor
@@ -44,4 +38,3 @@ def create_app(script_info=None):
         return jsonify(health="ok")
 
     return app
-

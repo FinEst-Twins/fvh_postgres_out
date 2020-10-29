@@ -35,10 +35,14 @@ class Observations(db.Model):
         obs_list = []
 
         if not minresulttime:
-            obs_list = Observations.query.filter(Observations.resulttime <= maxresulttime)
+            obs_list = Observations.query.filter(
+                Observations.resulttime <= maxresulttime
+            )
 
         elif not maxresulttime:
-            obs_list = Observations.query.filter(Observations.resulttime >= minresulttime)
+            obs_list = Observations.query.filter(
+                Observations.resulttime >= minresulttime
+            )
 
         else:
             obs_list = Observations.query.filter(
@@ -54,7 +58,9 @@ class Observations(db.Model):
         return {"Observations": list(map(lambda x: to_json(x), obs_list))}
 
     @classmethod
-    def filter_by_thing_timebound(cls, thing, minresulttime, maxresulttime, minphenombegintime, maxphenombegintime):
+    def filter_by_thing_timebound(
+        cls, thing, minresulttime, maxresulttime, minphenombegintime, maxphenombegintime
+    ):
 
         obs_list = (
             Observations.query.join(
@@ -74,7 +80,7 @@ class Observations(db.Model):
                     Observations.resulttime <= maxresulttime,
                     Observations.resulttime >= minresulttime,
                     Observations.phenomenontime_begin <= maxphenombegintime,
-                    Observations.phenomenontime_begin >= minphenombegintime
+                    Observations.phenomenontime_begin >= minphenombegintime,
                 )
             )
         )
@@ -83,7 +89,9 @@ class Observations(db.Model):
             return {
                 "result": x.result if x.result else "null",
                 "result time": x.resulttime if x.resulttime else "null",
-                "phenomenon time": x.phenomenontime_begin if x.phenomenontime_begin else "null",
+                "phenomenon time": x.phenomenontime_begin
+                if x.phenomenontime_begin
+                else "null",
                 "datastream_id": x.id,
                 "thing": x.thing_link,
                 "sensor": x.sensor_link,
