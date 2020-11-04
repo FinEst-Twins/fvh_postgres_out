@@ -1,14 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import os
 import sys
 from flask import jsonify
 import logging
+from elasticapm.contrib.flask import ElasticAPM
 
 logging.basicConfig(level=logging.INFO)
 
 db = SQLAlchemy()
+elastic_apm = ElasticAPM()
 
 
 def create_app(script_info=None):
@@ -22,6 +23,7 @@ def create_app(script_info=None):
 
     # set up extensions
     db.init_app(app)
+    elastic_apm.init_app(app)
 
     # register blueprints
     from app.resources.observations import observations_blueprint
