@@ -86,6 +86,12 @@ class Observation(Resource):
                             maxphenomtime,
                         )
 
+                    else:
+                        result = {"message": " unrecognized 'thing' "}
+                        response = jsonify(result)
+                        response.status_code = 400
+                        return response
+
                 else:
                     result = {"message": "query parameters 'thing' expected"}
                     response = jsonify(result)
