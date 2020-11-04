@@ -19,6 +19,11 @@ DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(hours=+1)
 DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-365)
 DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+365)
 
+allowed_things = {
+    "cesva": ["Noise-TA120-T246174", "Noise-TA120-T246182"],
+    "viikkisolar": [f"ViikkiSolar-Inv{i}" for i in range(1, 9)],
+}
+
 
 def extract_timestamp_from_query(query_parameters, param_name, default_timestamp):
     return (
@@ -38,40 +43,48 @@ class Observation(Resource):
             obs_list = []
             if query_parameters:
 
-                minresulttime = extract_timestamp_from_query(
-                    query_parameters,
-                    "minresulttime",
-                    DEFAULT_MIN_RESULTTIME,
-                )
-
-                maxresulttime = extract_timestamp_from_query(
-                    query_parameters,
-                    "maxresulttime",
-                    DEFAULT_MAX_RESULTTIME,
-                )
-
-                minphenomtime = extract_timestamp_from_query(
-                    query_parameters,
-                    "minphenomtime",
-                    DEFAULT_MIN_PHENOMTIME,
-                )
-
-                maxphenomtime = extract_timestamp_from_query(
-                    query_parameters,
-                    "maxphenomtime",
-                    DEFAULT_MAX_PHENOMTIME,
-                )
+                if "case" not in query_parameters:
+                    result = {"message": "url rewrite error"}
+                    response = jsonify(result)
+                    response.status_code = 400
+                    return response
 
                 if "thing" in query_parameters:
                     thing = request.args["thing"]
+                    case = request.args["case"]
 
-                    obs_list = Observations.filter_by_thing_timebound(
-                        thing,
-                        minresulttime,
-                        maxresulttime,
-                        minphenomtime,
-                        maxphenomtime,
-                    )
+                    if thing in allowed_things[case]:
+
+                        minresulttime = extract_timestamp_from_query(
+                            query_parameters,
+                            "minresulttime",
+                            DEFAULT_MIN_RESULTTIME,
+                        )
+
+                        maxresulttime = extract_timestamp_from_query(
+                            query_parameters,
+                            "maxresulttime",
+                            DEFAULT_MAX_RESULTTIME,
+                        )
+
+                        minphenomtime = extract_timestamp_from_query(
+                            query_parameters,
+                            "minphenomtime",
+                            DEFAULT_MIN_PHENOMTIME,
+                        )
+
+                        maxphenomtime = extract_timestamp_from_query(
+                            query_parameters,
+                            "maxphenomtime",
+                            DEFAULT_MAX_PHENOMTIME,
+                        )
+                        obs_list = Observations.filter_by_thing_timebound(
+                            thing,
+                            minresulttime,
+                            maxresulttime,
+                            minphenomtime,
+                            maxphenomtime,
+                        )
 
                 else:
                     result = {"message": "query parameters 'thing' expected"}
@@ -81,7 +94,7 @@ class Observation(Resource):
 
         except Exception as e:
             logging.error(e)
-            result = {"message": "error"}
+            result = {"message": "timestamp error"}
             response = jsonify(result)
             response.status_code = 400
             return response
