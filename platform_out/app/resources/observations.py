@@ -22,6 +22,7 @@ DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+365)
 allowed_things = {
     "cesva": ["Noise-TA120-T246174", "Noise-TA120-T246182"],
     "viikkisolar": [f"ViikkiSolar-Inv{i}" for i in range(1, 9)],
+    "lvdt":["wapicelvdt"]
 }
 
 
