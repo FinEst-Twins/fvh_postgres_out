@@ -79,11 +79,6 @@ class Observation(Resource):
                             "maxphenomtime",
                             DEFAULT_MAX_PHENOMTIME,
                         )
-                        logging.info(thing)
-                        logging.info(minresulttime)
-                        logging.info(maxresulttime)
-                        logging.info(minphenomtime)
-                        logging.info(maxphenomtime)
 
                         obs_list = Observations.filter_by_thing_timebound(
                             thing,

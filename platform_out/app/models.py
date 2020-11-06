@@ -83,6 +83,7 @@ class Observations(db.Model):
                     Observations.phenomenontime_begin >= minphenombegintime,
                 )
             )
+            .order_by(Observations.resulttime.desc())
         )
 
         def to_json(x):
