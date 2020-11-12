@@ -14,11 +14,6 @@ logging.basicConfig(level=logging.INFO)
 observations_blueprint = Blueprint("observations", __name__)
 api = Api(observations_blueprint)
 
-DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(hours=-1)
-DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(hours=+1)
-DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-365)
-DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+365)
-
 allowed_things = {
     "cesva": ["Noise-TA120-T246174", "Noise-TA120-T246182"],
     "viikkisolar": [f"ViikkiSolar-Inv{i}" for i in range(1, 9)],
@@ -39,6 +34,12 @@ class Observation(Resource):
         """
         gets list of all observations
         """
+
+        DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(hours=-1)
+        DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(hours=+1)
+        DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-365)
+        DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+365)
+
         try:
             query_parameters = request.args
             obs_list = []
