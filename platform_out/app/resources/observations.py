@@ -35,10 +35,10 @@ class Observation(Resource):
         gets list of all observations
         """
 
-        DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(hours=-1)
-        DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(hours=+1)
-        DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-365)
-        DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+365)
+        DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(days=-7)
+        DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(days=+1)
+        DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-7)
+        DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+1)
 
         try:
             query_parameters = request.args
