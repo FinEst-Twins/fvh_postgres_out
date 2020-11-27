@@ -8,8 +8,6 @@ services:
         dockerfile: Dockerfile.prod
     entrypoint: ['/project/entrypoint.sh']
     command: gunicorn --bind 0.0.0.0:5000 --log-level=debug manage:app
-    volumes:
-      - ./platform_out/:/project/
     expose:
       - 5000
     env_file:
