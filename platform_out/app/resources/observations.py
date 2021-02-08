@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import timedelta
 import json
 import os
-from app.models import Observations, Datastreams
+from app.models import Observations
 import logging
 from flask_sqlalchemy import SQLAlchemy
 
@@ -35,9 +35,9 @@ class Observation(Resource):
         gets list of all observations
         """
 
-        DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(days=-7)
+        DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(days=-2)
         DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(days=+1)
-        DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-7)
+        DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-2)
         DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+1)
 
         try:

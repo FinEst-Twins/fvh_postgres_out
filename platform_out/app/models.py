@@ -25,6 +25,7 @@ class Observations(db.Model):
     # parameters = db.Column(MutableDict.as_mutable(JSON))
     datastream_id = db.Column(db.Integer, index=True)
     featureofintrest_link = db.Column(db.String(), index=True)
+    featureofinterest_id = db.Column(db.Integer(), index=True)
 
     def __repr__(self):
         return f"<Observation {self.result}, {self.resulttime}>"
@@ -70,6 +71,7 @@ class Observations(db.Model):
                 Observations.result,
                 Observations.resulttime,
                 Observations.phenomenontime_begin,
+                Observations.featureofinterest_id,
                 Datastreams.id,
                 Datastreams.thing_link,
                 Datastreams.sensor_link,
@@ -96,6 +98,8 @@ class Observations(db.Model):
                 "datastream_id": x.id,
                 "thing": x.thing_link,
                 "sensor": x.sensor_link,
+                "feature of interest": x.featureofinterest_id if x.featureofinterest_id
+                else "null",
             }
 
         return {"Observations": list(map(lambda x: to_json(x), obs_list))}
