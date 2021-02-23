@@ -36,7 +36,7 @@ class Observation(Resource):
         """
 
         DEFAULT_MIN_RESULTTIME = datetime.now() + timedelta(days=-2)
-        DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(days=+1)
+        #DEFAULT_MAX_RESULTTIME = datetime.now() + timedelta(days=+1)
         DEFAULT_MIN_PHENOMTIME = datetime.now() + timedelta(days=-2)
         DEFAULT_MAX_PHENOMTIME = datetime.now() + timedelta(days=+1)
 
@@ -63,18 +63,21 @@ class Observation(Resource):
                             DEFAULT_MIN_RESULTTIME,
                         )
 
+                        DEFAULT_MAX_RESULTTIME = minresulttime + timedelta(days=+1)
                         maxresulttime = extract_timestamp_from_query(
                             query_parameters,
                             "maxresulttime",
                             DEFAULT_MAX_RESULTTIME,
                         )
 
+
                         minphenomtime = extract_timestamp_from_query(
                             query_parameters,
                             "minphenomtime",
-                            DEFAULT_MIN_PHENOMTIME,
+                            minresulttime,
                         )
 
+                        DEFAULT_MAX_PHENOMTIME = minphenomtime + timedelta(days=+1)
                         maxphenomtime = extract_timestamp_from_query(
                             query_parameters,
                             "maxphenomtime",
