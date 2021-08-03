@@ -8,7 +8,7 @@ from app.models import Observations
 import logging
 from flask_sqlalchemy import SQLAlchemy
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 observations_blueprint = Blueprint("observations", __name__)
