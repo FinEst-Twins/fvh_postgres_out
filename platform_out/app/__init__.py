@@ -6,7 +6,7 @@ from flask import jsonify
 import logging
 from elasticapm.contrib.flask import ElasticAPM
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 db = SQLAlchemy()
 elastic_apm = ElasticAPM()
