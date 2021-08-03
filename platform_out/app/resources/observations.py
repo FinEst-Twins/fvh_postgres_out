@@ -23,7 +23,7 @@ allowed_things = {
 
 def extract_timestamp_from_query(query_parameters, param_name, default_timestamp):
     return (
-        datetime.strptime(query_parameters[param_name], "%Y-%m-%dT%H:%M:%SZ")
+        datetime.strptime(query_parameters[param_name], "%Y-%m-%dT%H:%M:%S.%fZ")
         if param_name in query_parameters
         else default_timestamp
     )
