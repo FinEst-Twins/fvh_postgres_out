@@ -10,3 +10,4 @@ pytest
 regex
 requests
 SQLAlchemy
+sentry-sdk[flask]

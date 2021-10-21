@@ -7,9 +7,12 @@ import os
 from app.models import Observations
 import logging
 from flask_sqlalchemy import SQLAlchemy
+from flask import current_app
 
-logging.basicConfig(level=logging.INFO)
-
+logging.basicConfig(
+    format="%(asctime)-15s [%(levelname)s] %(funcName)s: %(message)s",
+    level=current_app.config["LOG_LEVEL"],
+)
 
 observations_blueprint = Blueprint("observations", __name__)
 api = Api(observations_blueprint)

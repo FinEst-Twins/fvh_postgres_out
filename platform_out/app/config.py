@@ -1,6 +1,5 @@
 import os
 import logging
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -24,9 +23,16 @@ class Config(object):
     ELASTIC_APM = {
         "SERVICE_NAME": get_env_variable("ELASTIC_SERVICE_NAME"),
         "SECRET_TOKEN": get_env_variable("ELASTIC_SECRET_TOKEN"),
-        "SERVER_URL": get_env_variable("ELASTIC_SERVER_URL"),
-        "DEBUG": True,
+        "SERVER_URL": get_env_variable("ELASTIC_SERVER_URL")
     }
+
+    ll = get_env_variable("LOG_LEVEL")
+    try:
+
+        LOG_LEVEL = {0: logging.ERROR,
+                     1: logging.WARN, 2: logging.INFO}[int(ll)]
+    except KeyError:
+        LOG_LEVEL = logging.DEBUG
 
 
 class ProductionConfig(Config):

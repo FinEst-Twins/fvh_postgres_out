@@ -6,9 +6,12 @@ from sqlalchemy.ext.mutable import MutableDict
 import logging
 import json
 from sqlalchemy.ext import mutable
+from flask import current_app
 
-logging.basicConfig(level=logging.INFO)
-
+logging.basicConfig(
+    format="%(asctime)-15s [%(levelname)s] %(funcName)s: %(message)s",
+    level=current_app.config["LOG_LEVEL"],
+)
 
 class Observations(db.Model):
     __tablename__ = "observation"
