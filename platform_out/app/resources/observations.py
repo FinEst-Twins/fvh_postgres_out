@@ -20,7 +20,7 @@ api = Api(observations_blueprint)
 allowed_things = {
     "cesva": ["Noise-TA120-T246174", "Noise-TA120-T246182"],
     "viikkisolar": [f"ViikkiSolar-Inv{i}" for i in range(1, 9)],
-    "lvdt":["wapicelvdt"]
+    "lvdt": ["wapicelvdt"]
 }
 
 
@@ -66,13 +66,13 @@ class Observation(Resource):
                             DEFAULT_MIN_RESULTTIME,
                         )
 
-                        DEFAULT_MAX_RESULTTIME = minresulttime + timedelta(days=+1)
+                        DEFAULT_MAX_RESULTTIME = minresulttime + \
+                            timedelta(days=+1)
                         maxresulttime = extract_timestamp_from_query(
                             query_parameters,
                             "maxresulttime",
                             DEFAULT_MAX_RESULTTIME,
                         )
-
 
                         minphenomtime = extract_timestamp_from_query(
                             query_parameters,
@@ -80,7 +80,8 @@ class Observation(Resource):
                             minresulttime,
                         )
 
-                        DEFAULT_MAX_PHENOMTIME = minphenomtime + timedelta(days=+1)
+                        DEFAULT_MAX_PHENOMTIME = minphenomtime + \
+                            timedelta(days=+1)
                         maxphenomtime = extract_timestamp_from_query(
                             query_parameters,
                             "maxphenomtime",
@@ -106,10 +107,16 @@ class Observation(Resource):
                     response = jsonify(result)
                     response.status_code = 400
                     return response
+        except ValueError as e:
+            logging.error(e)
+            result = {"message": "timestamp error"}
+            response = jsonify(result)
+            response.status_code = 400
+            return response
 
         except Exception as e:
             logging.error(e)
-            result = {"message": "timestamp error"}
+            result = {"message": "unexpected error"}
             response = jsonify(result)
             response.status_code = 400
             return response
